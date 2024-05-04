@@ -1,0 +1,177 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyMFU0nCDh9qeFx25IYWdc64",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/jhefe554/Empresa/blob/main/Empresa\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 7,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "EQr_av6Sjklp",
+        "outputId": "da49cf2b-7664-4ff7-bac3-81461c15ad92"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Employee with ID 1 added successfully  \n",
+            "Employee with ID 2 added successfully  \n",
+            "Employee with ID 3 added successfully  \n",
+            "Employee with ID 4 added successfully  \n",
+            "# Attendees to the meeting: 4\n",
+            "\n",
+            "My name is Roberto and I work for Tech Solutions Inc.\n",
+            "My ID is 1\n",
+            "\n",
+            "My name is Employee and I work for Tech Solutions Inc.\n",
+            "My ID is 2\n",
+            "\n",
+            "My name is Administrator and I work for Tech Solutions Inc.\n",
+            "My ID is 3\n",
+            "I am an Admin\n",
+            "Username: 3\n",
+            "Role: Admin\n",
+            "\n",
+            "My name is Administrator and I work for Tech Solutions Inc.\n",
+            "I am in charge.\n",
+            "My ID is 4\n",
+            "I am an Admin\n",
+            "Username: 4\n",
+            "Role: Admin\n",
+            "_Roberto deleted\n"
+          ]
+        }
+      ],
+      "source": [
+        "from abc import ABC, abstractmethod\n",
+        "\n",
+        "class AbstractEmployee(ABC):\n",
+        "    id_counter = 1\n",
+        "\n",
+        "    def __init__(self):\n",
+        "        self.id = AbstractEmployee.id_counter\n",
+        "        AbstractEmployee.id_counter += 1\n",
+        "\n",
+        "    @abstractmethod\n",
+        "    def say_id(self):\n",
+        "        pass\n",
+        "\n",
+        "class Employee(AbstractEmployee):\n",
+        "    id_counter = 1\n",
+        "\n",
+        "    def __init__(self, name=\"Employee\"):\n",
+        "        super().__init__()\n",
+        "        self.__company = \"Tech Solutions Inc.\"\n",
+        "        self._name = name\n",
+        "\n",
+        "    def say_id(self):\n",
+        "        print(\"My ID is\", self.id)\n",
+        "\n",
+        "    def get_name(self):\n",
+        "        return self._name\n",
+        "\n",
+        "    def set_name(self, name):\n",
+        "        self._name = name\n",
+        "\n",
+        "    def del_name(self):\n",
+        "        print(f\"_{self._name} deleted\")\n",
+        "        del self._name\n",
+        "\n",
+        "class User:\n",
+        "    def __init__(self, username, role):\n",
+        "        self.username = username\n",
+        "        self.role = role\n",
+        "\n",
+        "    def say_user_info(self):\n",
+        "        print(\"Username:\", self.username)\n",
+        "        print(\"Role:\", self.role)\n",
+        "\n",
+        "class Admin(Employee, User):\n",
+        "    def __init__(self, name=\"Administrator\"):\n",
+        "        super().__init__(name)\n",
+        "        User.__init__(self, self.id, \"Admin\")\n",
+        "\n",
+        "    def say_id(self):\n",
+        "        super().say_id()\n",
+        "        print(\"I am an Admin\")\n",
+        "\n",
+        "class Manager(Admin):\n",
+        "    def say_id(self):\n",
+        "        print(\"I am in charge.\")\n",
+        "        super().say_id()\n",
+        "\n",
+        "class Meeting:\n",
+        "    def __init__(self):\n",
+        "        self.attendees = []\n",
+        "\n",
+        "    def __add__(self, other):\n",
+        "        self.attendees.append(other)\n",
+        "        print(\"Employee with ID\",other.id,\"added successfully  \")\n",
+        "        return self\n",
+        "\n",
+        "    def __len__(self):\n",
+        "        return len(self.attendees)\n",
+        "\n",
+        "\n",
+        "employee1 = Employee()\n",
+        "employee2 = Employee()\n",
+        "admin1 = Admin()\n",
+        "manager1 = Manager()\n",
+        "\n",
+        "meeting1 = Meeting()\n",
+        "meeting1 + employee1\n",
+        "meeting1 + employee2\n",
+        "meeting1 + admin1\n",
+        "meeting1 + manager1\n",
+        "print(f\"# Attendees to the meeting: {len(meeting1)}\")\n",
+        "\n",
+        "employee1.set_name(\"Roberto\")\n",
+        "for employee in meeting1.attendees:\n",
+        "    print(f\"\\nMy name is {employee.get_name()} and I work for {employee._Employee__company}\")\n",
+        "    employee.say_id()\n",
+        "    try:\n",
+        "        employee.say_user_info()\n",
+        "    except AttributeError:\n",
+        "        continue\n",
+        "\n",
+        "employee1.del_name()\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Trabajo hecho por Jheferson Navas Doria ( jheferson.navas@upb.edu.co)"
+      ],
+      "metadata": {
+        "id": "_RZGP9Oej7zo"
+      }
+    }
+  ]
+}
